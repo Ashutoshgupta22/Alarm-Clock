@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Paint.Align
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -50,8 +51,10 @@ class MainActivity : ComponentActivity() {
                         showTimer = true
                     }
                     if (showTimer) ShowTimer(
-                        onConfirm = {
-                                    showTimer = false
+                        onConfirm = { hour, minute ->
+
+                            Log.i("TAG", "ShowTimer: $hour")
+                            showTimer = false
 
                     }, onDismiss = {
                         showTimer = false
@@ -80,13 +83,13 @@ private fun Fab(onFabClick: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ShowTimer(onConfirm: ()->Unit, onDismiss: ()->Unit) {
+private fun ShowTimer(onConfirm: (Int, Int)->Unit, onDismiss: ()->Unit) {
 
     val calendar = Calendar.getInstance()
-    val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
+    val currentHour = calendar.get(Calendar.HOUR)
     val currentMinute = calendar.get(Calendar.MINUTE)
 
-    val timeState = rememberTimePickerState(currentHour % 12, currentMinute, false)
+    val timeState = rememberTimePickerState(currentHour, currentMinute, false)
 
     Dialog(
         onDismissRequest = { onDismiss() },
@@ -128,8 +131,7 @@ private fun ShowTimer(onConfirm: ()->Unit, onDismiss: ()->Unit) {
                     }
                     TextButton(
                         onClick = {
-
-                            onConfirm()
+                            onConfirm(timeState.hour, timeState.minute)
                         }
                     ) {
                         Text(text = "Confirm")
