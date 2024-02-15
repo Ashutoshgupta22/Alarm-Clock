@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -40,7 +41,12 @@ import androidx.compose.ui.window.DialogProperties
 import java.util.Calendar
 import java.util.TreeSet
 
-data class MyTime(val hour: Int, val minute: Int) : Comparable<MyTime> {
+data class MyTime(
+    val hour: Int,
+    val minute: Int,
+    var isSet: Boolean
+) : Comparable<MyTime> {
+
     override fun compareTo(other: MyTime): Int {
         return if (hour == other.hour) minute - other.minute
         else hour - other.hour
@@ -71,8 +77,8 @@ class MainActivity : ComponentActivity() {
                         if (showTimer) ShowTimer(
                             onConfirm = { hour, minute ->
 
-                                val time = MyTime(hour, minute)
-                                alarmList.value = alarmList.value.plus(time)
+                                val time = MyTime(hour, minute, true)
+                                alarmList.value = alarmList.value.plus(time).toSortedSet().toList()
                                 showTimer = false
 
                             }, onDismiss = {
@@ -173,9 +179,13 @@ private fun AlarmList(alarmList: List<MyTime>) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth()
     ) {
-        items(alarmList.toSortedSet().toList()) {
-            TimeCard(time = it)
-//            Spacer(modifier = Modifier.height(8.dp))
+        itemsIndexed(alarmList) { index, time ->
+            TimeCard(time = time)
+
+            //conditional bottom padding
+            val isLastItem = index == alarmList.lastIndex
+            val bottomPadding = if (isLastItem) 130.dp else 0.dp
+            Spacer(modifier = Modifier.height(bottomPadding))
         }
     }
 }
@@ -185,8 +195,8 @@ fun TimeCard(time: MyTime) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 8.dp, end = 8.dp, top = 8.dp),
-        shape = RoundedCornerShape(12.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 8.dp),
+        shape = RoundedCornerShape(24.dp)
     ) {
         Column(
             modifier = Modifier.padding(12.dp)
@@ -196,7 +206,9 @@ fun TimeCard(time: MyTime) {
             val min = time.minute
 
             Row(
-                modifier = Modifier.wrapContentSize()
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(top = 10.dp)
             ) {
                 Text(text = "$hour:$min", fontSize = 40.sp)
                 Row(
@@ -211,14 +223,20 @@ fun TimeCard(time: MyTime) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
+                val isChecked = remember {
+                    mutableStateOf(time.isSet)
+                }
                 Switch(
-                    checked = true, onCheckedChange = {},
+                    checked = isChecked.value,
+                    onCheckedChange = {
+                        isChecked.value = !isChecked.value
+                        time.isSet = isChecked.value
+                    },
                 )
             }
         }
     }
 }
-
 
 @Preview
 @Composable
