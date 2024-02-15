@@ -1,0 +1,5 @@
+CREATE TABLE alarm (
+id integer PRIMARY KEY,
+hour integer NOT NULL,
+minute INTEGER NOT NULL
+);

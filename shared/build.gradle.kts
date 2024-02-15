@@ -1,13 +1,22 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    id("app.cash.sqldelight") version "2.0.1"
+}
+
+sqldelight {
+    databases {
+        create("AlarmSQLDelightDB") {
+            packageName.set("com.aspark.alarm.db")
+        }
+    }
 }
 
 kotlin {
     androidTarget {
         compilations.all {
             kotlinOptions {
-                jvmTarget = "1.8"
+                jvmTarget = "19"
             }
         }
     }
@@ -30,6 +39,17 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+
+        androidMain.dependencies {
+
+            //sqlDelight driver
+            implementation(libs.android.driver)
+        }
+
+        iosMain.dependencies {
+            //sqlDelight driver
+            implementation(libs.native.driver)
+        }
     }
 }
 
@@ -40,7 +60,7 @@ android {
         minSdk = 26
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_19
+        targetCompatibility = JavaVersion.VERSION_19
     }
 }
