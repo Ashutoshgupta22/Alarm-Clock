@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,24 +39,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.viewModelScope
+import com.aspark.alarmclock.MyTime
 import java.util.Calendar
 import java.util.TreeSet
 
-data class MyTime(
-    val hour: Int,
-    val minute: Int,
-    var isSet: Boolean
-) : Comparable<MyTime> {
-
-    override fun compareTo(other: MyTime): Int {
-        return if (hour == other.hour) minute - other.minute
-        else hour - other.hour
-    }
-}
-
 class MainActivity : ComponentActivity() {
+    private val viewModel : MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel.getAllAlarmsFromDb()
+
         setContent {
             MyApplicationTheme {
 

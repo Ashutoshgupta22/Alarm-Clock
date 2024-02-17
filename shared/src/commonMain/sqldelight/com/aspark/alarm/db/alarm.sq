@@ -1,5 +1,19 @@
 CREATE TABLE alarm (
-id integer PRIMARY KEY,
-hour integer NOT NULL,
-minute INTEGER NOT NULL
+id INTEGER PRIMARY KEY AUTOINCREMENT ,
+hour INTEGER NOT NULL,
+minute INTEGER NOT NULL,
+is_set INTEGER NOT NULL
 );
+
+insert:
+INSERT INTO alarm (id, hour, minute, is_set)
+VALUES (?, ?, ?, ?);
+
+getAll:
+SELECT *
+FROM alarm;
+
+updateAlarmSet:
+UPDATE alarm
+SET is_set = :isSet
+WHERE  id = :id;
