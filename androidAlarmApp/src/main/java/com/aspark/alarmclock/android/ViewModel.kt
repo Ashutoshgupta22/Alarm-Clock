@@ -18,7 +18,5 @@ class MainViewModel: ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
 
         }
-
     }
-
 }
