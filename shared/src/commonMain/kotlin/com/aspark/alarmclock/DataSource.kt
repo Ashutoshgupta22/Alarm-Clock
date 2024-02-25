@@ -2,7 +2,9 @@ package com.aspark.alarmclock
 
 import com.aspark.alarm.db.AlarmSQLDelightDB
 
-class DataSource(db: AlarmSQLDelightDB) {
+class DataSource() {
+
+    private val db: AlarmSQLDelightDB by lazy { getDatabase() }
 
     private val queries = db.alarmQueries
 

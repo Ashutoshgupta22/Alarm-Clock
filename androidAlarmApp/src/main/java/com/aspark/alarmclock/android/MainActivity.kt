@@ -40,8 +40,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.aspark.alarmclock.MyTime
 import java.util.Calendar
@@ -61,6 +63,12 @@ class MainActivity : ComponentActivity() {
                 var showTimer by remember { mutableStateOf(false) }
                 val alarmList = remember { mutableStateOf(listOf<MyTime>()) }
 
+                viewModel.alarmList.observe(this) {
+                    it?.let {
+                        alarmList.value = it
+                    }
+                }
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -77,7 +85,15 @@ class MainActivity : ComponentActivity() {
                             onConfirm = { hour, minute ->
 
                                 val time = MyTime(hour, minute, true)
-                                alarmList.value = alarmList.value.plus(time).toSortedSet().toList()
+                                val isAlarmPresent = alarmList.value.any {
+                                    it.hour == time.hour && it.minute == time.minute
+                                }
+
+                                if (! isAlarmPresent) {
+                                    alarmList.value = alarmList.value.plus(time).sorted()
+                                    viewModel.insert(time)
+                                }
+
                                 showTimer = false
 
                             }, onDismiss = {
@@ -173,7 +189,7 @@ private fun ShowTimer(onConfirm: (Int, Int) -> Unit, onDismiss: () -> Unit) {
 @Composable
 private fun AlarmList(alarmList: List<MyTime>) {
 
-    Log.i("TAG", "AlarmList: $alarmList")
+    Log.i("MainActivity", "AlarmList: $alarmList")
 
     LazyColumn(
         modifier = Modifier.fillMaxWidth()

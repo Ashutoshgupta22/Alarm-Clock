@@ -37,7 +37,7 @@ kotlin {
             //put your multiplatform dependencies here
 
             //koin
-            implementation(libs.koin.bom)
+//            implementation(libs.koin.bom)
             implementation(libs.koin.core)
 
         }
@@ -49,6 +49,7 @@ kotlin {
 
             //sqlDelight driver
             implementation(libs.android.driver)
+            implementation (libs.koin.android)
         }
 
         iosMain.dependencies {
