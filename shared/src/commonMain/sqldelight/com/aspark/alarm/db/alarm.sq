@@ -11,9 +11,14 @@ VALUES (?, ?, ?, ?);
 
 getAll:
 SELECT *
-FROM alarm;
+FROM alarm
+ORDER BY hour, minute;
 
 updateAlarmSet:
 UPDATE alarm
 SET is_set = :isSet
 WHERE  id = :id;
+
+deleteById:
+DELETE FROM alarm
+WHERE  id= ?;

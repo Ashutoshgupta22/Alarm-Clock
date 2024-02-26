@@ -20,15 +20,25 @@ class MainViewModel(): ViewModel() {
     fun getAllAlarmsFromDb() {
         Log.i("MainViewModel", "getAllAlarmsFromDb: called")
         viewModelScope.launch(Dispatchers.IO) {
-
             _alarmList.postValue(dataSource.getAll())
         }
     }
 
     fun insert(time: MyTime) {
-
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             dataSource.insert(time)
+        }
+    }
+
+    fun updateAlarmSet(time: MyTime) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dataSource.updateAlarmSet(time)
+        }
+    }
+
+    fun deleteById(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dataSource.deleteAlarm(id)
         }
     }
 }

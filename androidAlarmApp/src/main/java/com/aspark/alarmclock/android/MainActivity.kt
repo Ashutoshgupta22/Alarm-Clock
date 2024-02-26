@@ -1,15 +1,11 @@
 package com.aspark.alarmclock.android
 
-import android.content.Context
 import android.os.Bundle
-import android.util.AttributeSet
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,7 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,14 +35,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.fastAny
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import com.aspark.alarmclock.MyTime
 import java.util.Calendar
-import java.util.TreeSet
 
 class MainActivity : ComponentActivity() {
     private val viewModel : MainViewModel by viewModels()
@@ -77,7 +67,7 @@ class MainActivity : ComponentActivity() {
 
 //                    Box(modifier = Modifier.fillMaxSize())
 //                    {
-                        AlarmList(alarmList = alarmList.value)
+                        AlarmList(alarmList = alarmList.value, viewModel::updateAlarmSet)
 
                         Fab {
                             showTimer = true
@@ -85,7 +75,7 @@ class MainActivity : ComponentActivity() {
                         if (showTimer) ShowTimer(
                             onConfirm = { hour, minute ->
 
-                                val time = MyTime(hour, minute, true)
+                                val time = MyTime(alarmList.value.size+1, hour, minute, true)
                                 val isAlarmPresent = alarmList.value.any {
                                     it.hour == time.hour && it.minute == time.minute
                                 }
@@ -190,7 +180,7 @@ private fun ShowTimer(onConfirm: (Int, Int) -> Unit, onDismiss: () -> Unit) {
 }
 
 @Composable
-private fun AlarmList(alarmList: List<MyTime>) {
+private fun AlarmList(alarmList: List<MyTime>, onAlarmSetChange: (MyTime)-> Unit) {
 
     Log.i("MainActivity", "AlarmList: $alarmList")
 
@@ -198,7 +188,7 @@ private fun AlarmList(alarmList: List<MyTime>) {
         modifier = Modifier.fillMaxWidth()
     ) {
         itemsIndexed(alarmList) { index, time ->
-            TimeCard(time = time)
+            TimeCard(time = time, onAlarmSetChange)
 
             //conditional bottom padding
             val isLastItem = index == alarmList.lastIndex
@@ -209,7 +199,7 @@ private fun AlarmList(alarmList: List<MyTime>) {
 }
 
 @Composable
-fun TimeCard(time: MyTime) {
+fun TimeCard(time: MyTime, onAlarmSetChange: (MyTime) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -228,11 +218,12 @@ fun TimeCard(time: MyTime) {
                     .wrapContentSize()
                     .padding(top = 10.dp)
             ) {
-                Text(text = "$hour:$min", fontSize = 40.sp)
+                Text(text = showTime(hour, min), fontSize = 40.sp)
                 Row(
                     modifier = Modifier.fillMaxHeight(),
                     verticalAlignment = Alignment.Bottom
                 ) {
+
                     Text(text = amPm, fontSize = 18.sp)
                 }
             }
@@ -249,10 +240,22 @@ fun TimeCard(time: MyTime) {
                     onCheckedChange = {
                         isChecked.value = !isChecked.value
                         time.isSet = isChecked.value
+                        onAlarmSetChange(time)
                     },
                 )
             }
         }
+    }
+}
+
+fun showTime(hour: Int, min: Int): String {
+    return if (hour/10 == 0 ) {
+        if (min/10 == 0) "0$hour:0$min"
+        else "0$hour:$min"
+    }
+    else {
+        if (min/10 == 0) "$hour:0$min"
+        else "$hour:$min"
     }
 }
 

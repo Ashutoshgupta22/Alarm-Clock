@@ -16,12 +16,16 @@ class DataSource() {
     fun getAll(): List<MyTime> {
         return queries.getAll().executeAsList().map {
             val isSet = it.is_set.toInt() == 1
-            MyTime(it.hour.toInt(), it.minute.toInt(), isSet)
+            MyTime(it.id.toInt(), it.hour.toInt(), it.minute.toInt(), isSet)
         }
     }
 
     fun updateAlarmSet(myTime: MyTime) {
         val isSet = if (myTime.isSet) 1L else 0L
-//        queries.updateAlarmSet(isSet, )
+        myTime.id?.toLong()?.let { queries.updateAlarmSet(isSet, it) }
+    }
+
+    fun deleteAlarm(id: Int) {
+        queries.deleteById(id.toLong())
     }
 }
