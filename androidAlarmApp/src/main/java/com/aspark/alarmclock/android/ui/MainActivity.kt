@@ -1,4 +1,4 @@
-package com.aspark.alarmclock.android
+package com.aspark.alarmclock.android.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -37,7 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.aspark.alarmclock.DataSource
 import com.aspark.alarmclock.MyTime
+import com.aspark.alarmclock.android.MainViewModel
+import com.aspark.alarmclock.android.MyApplicationTheme
 import java.util.Calendar
 
 class MainActivity : ComponentActivity() {
@@ -223,8 +226,10 @@ fun TimeCard(time: MyTime, onAlarmSetChange: (MyTime) -> Unit) {
                     modifier = Modifier.fillMaxHeight(),
                     verticalAlignment = Alignment.Bottom
                 ) {
-
-                    Text(text = amPm, fontSize = 18.sp)
+                    Text(
+                        text = amPm, fontSize = 18.sp,
+                        modifier = Modifier.wrapContentSize()
+                        )
                 }
             }
 

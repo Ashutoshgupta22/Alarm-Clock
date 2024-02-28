@@ -12,6 +12,9 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
     buildFeatures {
         compose = true
@@ -44,5 +47,11 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.ui.graphics)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.ui.test.manifest)
 }
