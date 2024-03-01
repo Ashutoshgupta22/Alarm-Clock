@@ -11,11 +11,13 @@ import com.aspark.alarmclock.android.ui.MainActivity
 class AlarmReceiver: BroadcastReceiver(), Receiver {
     override fun onReceive(context: Context?, intent: Intent?) {
 
-        Log.i("AlarmReceiverAndroid", "onReceive: Alarm broadcast received")
+        val id = intent?.getIntExtra("alarmId",-1)
+        Log.i("AlarmReceiverAndroid", "onReceive: Alarm broadcast received for id: $id")
 
         val alarmIntent = Intent(context!!, AlarmActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
+        alarmIntent.putExtra("alarmId", id)
         context.startActivity(alarmIntent)
     }
 }

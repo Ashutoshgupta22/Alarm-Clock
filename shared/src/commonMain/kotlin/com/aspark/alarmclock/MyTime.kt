@@ -1,7 +1,7 @@
 package com.aspark.alarmclock
 
 data class MyTime(
-    val id: Int?,
+    val id: Int,
     val hour: Int,
     val minute: Int,
     var isSet: Boolean

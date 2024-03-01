@@ -20,9 +20,11 @@ class DataSource() {
         }
     }
 
-    fun updateAlarmSet(myTime: MyTime) {
-        val isSet = if (myTime.isSet) 1L else 0L
-        myTime.id?.toLong()?.let { queries.updateAlarmSet(isSet, it) }
+    fun updateAlarmSet(id: Int, isSet: Boolean) {
+
+        println("DataSource - id:$id")
+        val set = if (isSet) 1L else 0L
+        queries.updateAlarmSet(id = id.toLong(), isSet = set)
     }
 
     fun deleteAlarm(id: Int) {

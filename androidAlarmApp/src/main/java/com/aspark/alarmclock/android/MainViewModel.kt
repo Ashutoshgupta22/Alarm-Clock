@@ -9,8 +9,11 @@ import com.aspark.alarmclock.DataSource
 import com.aspark.alarmclock.MyTime
 import com.aspark.alarmclock.alarm.setAlarmService
 import com.aspark.alarmclock.android.service.AlarmReceiver
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 class MainViewModel(): ViewModel() {
 
@@ -36,7 +39,7 @@ class MainViewModel(): ViewModel() {
 
     fun updateAlarmSet(time: MyTime) {
         viewModelScope.launch(Dispatchers.IO) {
-            dataSource.updateAlarmSet(time)
+            dataSource.updateAlarmSet(time.id, time.isSet)
         }
     }
 
@@ -44,5 +47,20 @@ class MainViewModel(): ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             dataSource.deleteAlarm(id)
         }
+    }
+
+    fun alarmSetFalse(id: Int) {
+         viewModelScope.launch(Dispatchers.IO) {
+            Log.i("MainViewModel", "alarmSetFalse: called")
+            dataSource.updateAlarmSet(id, false)
+        }
+
+        val def = viewModelScope.async(Dispatchers.IO) {
+            Log.i("MainViewModel", "alarmSetFalse: async called")
+        }
+        suspend{ def.await()
+            Log.i("MainViewModel", "alarmSetFalse: await called")}
+
+        Log.i("MainViewModel", "outer called ")
     }
 }

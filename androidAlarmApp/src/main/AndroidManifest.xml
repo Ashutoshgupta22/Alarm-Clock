@@ -2,16 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+<!--    <uses-permission android:name="android.permission.WAKE_LOCK"/>-->
+<!--    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>-->
 
     <application
         android:label="Alarm"
         android:name="com.aspark.alarmclock.MyApplication"
         android:allowBackup="false"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/FullScreenTheme">
         <activity
             android:name=".ui.AlarmActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:showOnLockScreen="true"
             android:turnScreenOn="true"
             android:label="@string/title_activity_alarm"
@@ -29,7 +32,13 @@
         <receiver
             android:name=".service.AlarmReceiver"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false">
+            <intent-filter>
+                <action
+                    android:name="com.aspark.alarmclock.alarm.AlarmServiceAndroid">
+                </action>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
