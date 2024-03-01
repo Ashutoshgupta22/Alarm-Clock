@@ -9,18 +9,15 @@ import com.aspark.alarmclock.DataSource
 import com.aspark.alarmclock.MyTime
 import com.aspark.alarmclock.alarm.setAlarmService
 import com.aspark.alarmclock.android.service.AlarmReceiver
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
-class MainViewModel(): ViewModel() {
+class MainViewModel() : ViewModel() {
 
     private val _alarmList = MutableLiveData<List<MyTime>>()
     val alarmList: LiveData<List<MyTime>> = _alarmList
 
-    private val dataSource by lazy{ DataSource()}
+    private val dataSource by lazy { DataSource() }
 //    private val alarmService by la
 
     fun getAllAlarmsFromDb() {
@@ -50,17 +47,31 @@ class MainViewModel(): ViewModel() {
     }
 
     fun alarmSetFalse(id: Int) {
-         viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             Log.i("MainViewModel", "alarmSetFalse: called")
             dataSource.updateAlarmSet(id, false)
+            updateIsSetUi(id, false)
+        }
+    }
+
+    private fun updateIsSetUi(id: Int, isSet: Boolean) {
+
+        val alarm = _alarmList.value?.find {
+            it.id == id
         }
 
-        val def = viewModelScope.async(Dispatchers.IO) {
-            Log.i("MainViewModel", "alarmSetFalse: async called")
+        var index: Int? = null
+        alarm?.let {
+            it.isSet = isSet
+            index = _alarmList.value?.indexOf(it)
         }
-        suspend{ def.await()
-            Log.i("MainViewModel", "alarmSetFalse: await called")}
 
-        Log.i("MainViewModel", "outer called ")
+        index?.let {
+            Log.i("MainViewModel", "updateIsSetUi: called")
+            _alarmList.apply {
+                value?.get(it)?.isSet  = isSet
+                postValue(_alarmList.value)
+            }
+        }
     }
 }

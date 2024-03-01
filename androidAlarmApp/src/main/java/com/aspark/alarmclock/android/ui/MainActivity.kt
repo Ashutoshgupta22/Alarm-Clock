@@ -101,6 +101,12 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.getAllAlarmsFromDb()
+    }
 }
 
 @Composable
@@ -203,6 +209,7 @@ private fun AlarmList(alarmList: List<MyTime>, onAlarmSetChange: (MyTime)-> Unit
 
 @Composable
 fun TimeCard(time: MyTime, onAlarmSetChange: (MyTime) -> Unit) {
+    Log.i("MainActivity", "TimeCard: called $time- ${time.isSet}")
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -237,14 +244,16 @@ fun TimeCard(time: MyTime, onAlarmSetChange: (MyTime) -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
-                val isChecked = remember {
+                val isChecked = remember(time) {
                     mutableStateOf(time.isSet)
                 }
+//                Log.i("MainActivity", "TimeCard: isChecked-${isChecked.value}")
                 Switch(
                     checked = isChecked.value,
                     onCheckedChange = {
                         isChecked.value = !isChecked.value
                         time.isSet = isChecked.value
+//                        time.isSet = !time.isSet
                         onAlarmSetChange(time)
                     },
                 )
