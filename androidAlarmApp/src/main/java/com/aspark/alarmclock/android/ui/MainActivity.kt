@@ -1,10 +1,15 @@
 package com.aspark.alarmclock.android.ui
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,12 +38,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.aspark.alarmclock.DataSource
+import androidx.lifecycle.LifecycleOwner
 import com.aspark.alarmclock.MyTime
 import com.aspark.alarmclock.android.MainViewModel
 import com.aspark.alarmclock.android.MyApplicationTheme
@@ -45,6 +52,7 @@ import java.util.Calendar
 
 class MainActivity : ComponentActivity() {
     private val viewModel : MainViewModel by viewModels()
+    private var hasNotificationPermission = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,58 +62,82 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyApplicationTheme {
 
-                var showTimer by remember { mutableStateOf(false) }
-                val alarmList = remember { mutableStateOf(listOf<MyTime>()) }
+                val permissionLauncher = rememberLauncherForActivityResult(
+                    contract = ActivityResultContracts.RequestPermission(),
+                    onResult = { hasNotificationPermission = it }
+                )
 
-                viewModel.alarmList.observe(this) {
-                    it?.let {
-                        alarmList.value = it
-                    }
-                }
 
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-
-//                    Box(modifier = Modifier.fillMaxSize())
-//                    {
-                        AlarmList(alarmList = alarmList.value, viewModel::updateAlarmSet)
-
-                        Fab {
-                            showTimer = true
-                        }
-                        if (showTimer) ShowTimer(
-                            onConfirm = { hour, minute ->
-
-                                val time = MyTime(alarmList.value.size+1, hour, minute, true)
-                                val isAlarmPresent = alarmList.value.any {
-                                    it.hour == time.hour && it.minute == time.minute
-                                }
-
-                                if (! isAlarmPresent) {
-                                    alarmList.value = alarmList.value.plus(time).sorted()
-                                    viewModel.insert(time)
-                                }
-                                else Toast.makeText(this, "Alarm already added",
-                                    Toast.LENGTH_SHORT).show()
-
-                                showTimer = false
-
-                            }, onDismiss = {
-                                showTimer = false
-                            }
-                        )
-//                    }
-                }
+                MainScreen(viewModel, this, permissionLauncher,
+                    hasNotificationPermission)
             }
         }
     }
 
     override fun onResume() {
         super.onResume()
-
         viewModel.getAllAlarmsFromDb()
+    }
+}
+
+@Composable
+fun MainScreen(viewModel: MainViewModel, context: Context,
+               permissionLauncher: ManagedActivityResultLauncher<String, Boolean>,
+               hasNotificationPermission: Boolean) {
+
+
+    if (!hasNotificationPermission) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            LaunchedEffect(Unit ) {
+
+                permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
+    var showTimer by remember { mutableStateOf(false) }
+    val alarmList = remember { mutableStateOf(listOf<MyTime>()) }
+
+    viewModel.alarmList.observe(LocalLifecycleOwner.current) {
+        it?.let {
+            alarmList.value = it
+        }
+    }
+
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+
+//                    Box(modifier = Modifier.fillMaxSize())
+//                    {
+        AlarmList(alarmList = alarmList.value, viewModel::updateAlarmSet)
+
+        Fab {
+            showTimer = true
+        }
+        if (showTimer) ShowTimer(
+            onConfirm = { hour, minute ->
+
+                val time = MyTime(alarmList.value.size+1, hour, minute, true)
+                val isAlarmPresent = alarmList.value.any {
+                    it.hour == time.hour && it.minute == time.minute
+                }
+
+                if (! isAlarmPresent) {
+                    alarmList.value = alarmList.value.plus(time).sorted()
+                    viewModel.insert(time)
+                }
+                else Toast.makeText(context, "Alarm already added",
+                    Toast.LENGTH_SHORT).show()
+
+                showTimer = false
+
+            }, onDismiss = {
+                showTimer = false
+            }
+        )
+//                    }
     }
 }
 
