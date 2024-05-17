@@ -63,6 +63,8 @@ class MyNotification(private val context: Context) {
             .setSmallIcon(R.drawable.ic_alarm)
             .setContentTitle("Alarm")
             .setContentText("Content text")
+            // prevents simultaneous appearing of notification in status bar with fullScreen intent
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setFullScreenIntent(pendingIntent, true)

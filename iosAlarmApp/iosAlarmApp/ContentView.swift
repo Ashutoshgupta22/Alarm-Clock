@@ -2,24 +2,56 @@ import SwiftUI
 import shared
 
 struct ContentView: View {
-//	let greet = Greeting().greet()
+
+    struct Person: Identifiable {
+      let id = UUID() // Unique identifier for each person
+      let name: String
+      let age: Int
+      var male: Bool
+    }
+
+    @State var people = [
+      Person(name: "Alice", age: 30, male: false),
+      Person(name: "Bob", age: 25, male: true)
+    ]
 
 	var body: some View {
-        
-        VStack{
+      
+        NavigationStack() {
             
-            
-            Text("greet")
-            
-            Text("Hello")
-            Button(action: {
+            List{
+                ForEach($people) { $person in
+
+                    HStack{
+                        VStack{
+                            Text(person.name)
+                            Text(String(person.age))
+                        }
+                        Toggle(isOn: $person.male) {
+                            Text("")
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Alarm")
+//            .toolbarBackground(.ultraThinMaterial, for: .tabBar)
+            .toolbar(content: {
                 
-            }, label: {
-                Text("Click")
+                Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
+                    Image(systemName: "plus")
+                })
+//                .background(.ultraThinMaterial)
             })
-            .buttonStyle(.bordered)
-    
         }
+//        .navigationTitle("Alarm")
+//        .toolbarBackground(.ultraThickMaterial, for: .tabBar)
+//        .toolbar(content: {
+//            
+//            Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
+//                /*@START_MENU_TOKEN@*/Text("Button")/*@END_MENU_TOKEN@*/
+//            })
+//            .background(.ultraThinMaterial)
+//        })
 	}
 }
 
