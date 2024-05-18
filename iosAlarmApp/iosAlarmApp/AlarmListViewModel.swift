@@ -11,13 +11,14 @@ import shared
 
 class AlarmListViewModel: ObservableObject {
     
-    @Published var alarmList: [Alarm] = []
+    @Published var alarmList: [MyTime] = []
+    let repo = Repository()
     
     init() {
         fetchAlarms()
     }
     
     func fetchAlarms() {
-        
+        alarmList = repo.getAll()
     }
 }

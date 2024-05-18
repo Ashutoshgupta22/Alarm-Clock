@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aspark.alarmclock.DataSource
 import com.aspark.alarmclock.MyTime
+import com.aspark.alarmclock.Repository
 import com.aspark.alarmclock.alarm.setAlarmService
 import com.aspark.alarmclock.android.service.AlarmReceiver
 import kotlinx.coroutines.Dispatchers
@@ -17,8 +17,7 @@ class MainViewModel() : ViewModel() {
     private val _alarmList = MutableLiveData<List<MyTime>>()
     val alarmList: LiveData<List<MyTime>> = _alarmList
 
-    private val dataSource by lazy { DataSource() }
-//    private val alarmService by la
+    private val dataSource by lazy { Repository() }
 
     fun getAllAlarmsFromDb() {
         Log.i("MainViewModel", "getAllAlarmsFromDb: called")

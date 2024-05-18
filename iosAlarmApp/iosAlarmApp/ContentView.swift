@@ -3,31 +3,34 @@ import shared
 
 struct ContentView: View {
 
-    struct Person: Identifiable {
-      let id = UUID() // Unique identifier for each person
-      let name: String
-      let age: Int
-      var male: Bool
-    }
+//    struct Person: Identifiable {
+//      let id = UUID() // Unique identifier for each person
+//      let name: String
+//      let age: Int
+//      var male: Bool
+//    }
+//    
+    @ObservedObject private var alarmListViewModel = AlarmListViewModel()
+    @State private var selectedTime = Date()
 
-    @State var people = [
-      Person(name: "Alice", age: 30, male: false),
-      Person(name: "Bob", age: 25, male: true)
-    ]
+//    @State var people = [
+//      Person(name: "Alice", age: 30, male: false),
+//      Person(name: "Bob", age: 25, male: true)
+//    ]
 
 	var body: some View {
       
         NavigationStack() {
             
             List{
-                ForEach($people) { $person in
+                ForEach($alarmListViewModel.alarmList, id: \.self) { $alarm in
 
                     HStack{
                         VStack{
-                            Text(person.name)
-                            Text(String(person.age))
+                            Text(String(alarm.hour))
+                            Text(String(alarm.minute))
                         }
-                        Toggle(isOn: $person.male) {
+                        Toggle(isOn: $alarm.isSet) {
                             Text("")
                         }
                     }
@@ -37,7 +40,10 @@ struct ContentView: View {
 //            .toolbarBackground(.ultraThinMaterial, for: .tabBar)
             .toolbar(content: {
                 
-                Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
+                Button(action: {
+                    DatePicker("Select Time", selection: $selectedTime, displayedComponents:
+                            .hourAndMinute).labelsHidden()
+                }, label: {
                     Image(systemName: "plus")
                 })
 //                .background(.ultraThinMaterial)
