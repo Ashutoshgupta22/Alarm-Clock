@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aspark.alarmclock.MyTime
+import com.aspark.alarmclock.AlarmData
 import com.aspark.alarmclock.Repository
 import com.aspark.alarmclock.alarm.setAlarmService
 import com.aspark.alarmclock.android.service.AlarmReceiver
@@ -14,8 +14,8 @@ import kotlinx.coroutines.launch
 
 class MainViewModel() : ViewModel() {
 
-    private val _alarmList = MutableLiveData<List<MyTime>>()
-    val alarmList: LiveData<List<MyTime>> = _alarmList
+    private val _alarmList = MutableLiveData<List<AlarmData>>()
+    val alarmList: LiveData<List<AlarmData>> = _alarmList
 
     private val dataSource by lazy { Repository() }
 
@@ -26,14 +26,14 @@ class MainViewModel() : ViewModel() {
         }
     }
 
-    fun insert(time: MyTime) {
+    fun insert(time: AlarmData) {
         viewModelScope.launch(Dispatchers.IO) {
             dataSource.insert(time)
             setAlarmService(time, AlarmReceiver())
         }
     }
 
-    fun updateAlarmSet(time: MyTime) {
+    fun updateAlarmSet(time: AlarmData) {
         viewModelScope.launch(Dispatchers.IO) {
             dataSource.updateAlarmSet(time.id, time.isSet)
         }

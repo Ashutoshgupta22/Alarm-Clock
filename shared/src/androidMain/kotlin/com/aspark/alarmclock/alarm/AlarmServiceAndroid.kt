@@ -6,11 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.aspark.alarmclock.MyApplicationAndroid
-import com.aspark.alarmclock.MyTime
+import com.aspark.alarmclock.AlarmData
 import com.aspark.alarmclock.Receiver
 import java.util.Calendar
 
-actual fun setAlarmService(time: MyTime, alarmReceiver: Receiver) {
+actual fun setAlarmService(time: AlarmData, alarmReceiver: Receiver) {
     val context = MyApplicationAndroid.getAppContext()
     AlarmServiceAndroid(context).setAlarm(time, alarmReceiver)
 }
@@ -19,7 +19,7 @@ class AlarmServiceAndroid(private val context: Context) {
 
     private lateinit var alarmManager: AlarmManager
 
-    fun setAlarm(time: MyTime, alarmReceiver: Receiver) {
+    fun setAlarm(time: AlarmData, alarmReceiver: Receiver) {
         alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         val intent = Intent(context, alarmReceiver.javaClass)

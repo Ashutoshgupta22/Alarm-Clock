@@ -44,8 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.LifecycleOwner
-import com.aspark.alarmclock.MyTime
+import com.aspark.alarmclock.AlarmData
 import com.aspark.alarmclock.android.MainViewModel
 import com.aspark.alarmclock.android.MyApplicationTheme
 import java.util.Calendar
@@ -96,7 +95,7 @@ fun MainScreen(viewModel: MainViewModel, context: Context,
     }
 
     var showTimer by remember { mutableStateOf(false) }
-    val alarmList = remember { mutableStateOf(listOf<MyTime>()) }
+    val alarmList = remember { mutableStateOf(listOf<AlarmData>()) }
 
     viewModel.alarmList.observe(LocalLifecycleOwner.current) {
         it?.let {
@@ -119,7 +118,7 @@ fun MainScreen(viewModel: MainViewModel, context: Context,
         if (showTimer) ShowTimer(
             onConfirm = { hour, minute ->
 
-                val time = MyTime(alarmList.value.size+1, hour, minute, true)
+                val time = AlarmData(alarmList.value.size+1, hour, minute, true)
                 val isAlarmPresent = alarmList.value.any {
                     it.hour == time.hour && it.minute == time.minute
                 }
@@ -221,7 +220,7 @@ private fun ShowTimer(onConfirm: (Int, Int) -> Unit, onDismiss: () -> Unit) {
 }
 
 @Composable
-private fun AlarmList(alarmList: List<MyTime>, onAlarmSetChange: (MyTime)-> Unit) {
+private fun AlarmList(alarmList: List<AlarmData>, onAlarmSetChange: (AlarmData)-> Unit) {
 
     Log.i("MainActivity", "AlarmList: $alarmList")
 
@@ -240,7 +239,7 @@ private fun AlarmList(alarmList: List<MyTime>, onAlarmSetChange: (MyTime)-> Unit
 }
 
 @Composable
-fun TimeCard(time: MyTime, onAlarmSetChange: (MyTime) -> Unit) {
+fun TimeCard(time: AlarmData, onAlarmSetChange: (AlarmData) -> Unit) {
     Log.i("MainActivity", "TimeCard: called $time- ${time.isSet}")
     Card(
         modifier = Modifier

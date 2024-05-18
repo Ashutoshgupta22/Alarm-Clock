@@ -8,15 +8,15 @@ class Repository() {
 
     private val queries = db.alarmQueries
 
-    fun insert(myTime: MyTime) {
-        val isSet = if (myTime.isSet) 1 else 0
-        queries.insert(null, myTime.hour.toLong(), myTime.minute.toLong(), isSet.toLong())
+    fun insert(alarmData: AlarmData) {
+        val isSet = if (alarmData.isSet) 1 else 0
+        queries.insert(null, alarmData.hour.toLong(), alarmData.minute.toLong(), isSet.toLong())
     }
 
-    fun getAll(): List<MyTime> {
+    fun getAll(): List<AlarmData> {
         return queries.getAll().executeAsList().map {
             val isSet = it.is_set.toInt() == 1
-            MyTime(it.id.toInt(), it.hour.toInt(), it.minute.toInt(), isSet)
+            AlarmData(it.id.toInt(), it.hour.toInt(), it.minute.toInt(), isSet)
         }
     }
 
