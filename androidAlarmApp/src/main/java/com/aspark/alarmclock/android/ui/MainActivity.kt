@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.aspark.alarmclock.AlarmData
+import com.aspark.alarmclock.Utility
 import com.aspark.alarmclock.android.MainViewModel
 import com.aspark.alarmclock.android.MyApplicationTheme
 import java.util.Calendar
@@ -250,16 +251,15 @@ fun TimeCard(time: AlarmData, onAlarmSetChange: (AlarmData) -> Unit) {
         Column(
             modifier = Modifier.padding(12.dp)
         ) {
-            val hour = time.hour % 12
-            val amPm = if (time.hour < 12) "am" else "pm"
-            val min = time.minute
+
+            val amPm = Utility().amOrPm(time)
 
             Row(
                 modifier = Modifier
                     .wrapContentSize()
                     .padding(top = 10.dp)
             ) {
-                Text(text = showTime(hour, min), fontSize = 40.sp)
+                Text(text = Utility().formatTime(time.hour, time.minute), fontSize = 40.sp)
                 Row(
                     modifier = Modifier.fillMaxHeight(),
                     verticalAlignment = Alignment.Bottom
@@ -293,16 +293,16 @@ fun TimeCard(time: AlarmData, onAlarmSetChange: (AlarmData) -> Unit) {
     }
 }
 
-fun showTime(hour: Int, min: Int): String {
-    return if (hour/10 == 0 ) {
-        if (min/10 == 0) "0$hour:0$min"
-        else "0$hour:$min"
-    }
-    else {
-        if (min/10 == 0) "$hour:0$min"
-        else "$hour:$min"
-    }
-}
+//fun showTime(hour: Int, min: Int): String {
+//    return if (hour/10 == 0 ) {
+//        if (min/10 == 0) "0$hour:0$min"
+//        else "0$hour:$min"
+//    }
+//    else {
+//        if (min/10 == 0) "$hour:0$min"
+//        else "$hour:$min"
+//    }
+//}
 
 @Preview
 @Composable

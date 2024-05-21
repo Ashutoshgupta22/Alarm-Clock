@@ -1,66 +1,92 @@
 import SwiftUI
 import shared
 
+@available(iOS 16.4, *)
 struct ContentView: View {
 
-//    struct Person: Identifiable {
-//      let id = UUID() // Unique identifier for each person
-//      let name: String
-//      let age: Int
-//      var male: Bool
-//    }
-//    
-    @ObservedObject private var alarmListViewModel = AlarmListViewModel()
-    @State private var selectedTime = Date()
-
-//    @State var people = [
-//      Person(name: "Alice", age: 30, male: false),
-//      Person(name: "Bob", age: 25, male: true)
-//    ]
+    @ObservedObject private var viewModel = AlarmListViewModel()
+    @State private var showTimePicker = false
 
 	var body: some View {
       
         NavigationStack() {
             
             List{
-                ForEach($alarmListViewModel.alarmList, id: \.self) { $alarm in
+                ForEach($viewModel.alarmList, id: \.self) { $alarm in
 
                     HStack{
-                        VStack{
-                            Text(String(alarm.hour))
-                            Text(String(alarm.minute))
-                        }
-                        Toggle(isOn: $alarm.isSet) {
-                            Text("")
-                        }
+                            Text( viewModel.formatTime(time: alarm) ).font(.custom("AlarmFontSize", size: 60))
+                        
+                        +
+                            Text( viewModel.amOrPm(time: alarm)
+                                ).font(.custom("AlarmFontSize", size: 30))
+  
+                        Spacer()
+                        
+                        Toggle(isOn: $alarm.isSet) {}
+                            .labelsHidden()
                     }
+                }
+                .onAppear() {
+                    viewModel.fetchAlarms()
                 }
             }
             .navigationTitle("Alarm")
-//            .toolbarBackground(.ultraThinMaterial, for: .tabBar)
-            .toolbar(content: {
+            .toolbar {
                 
                 Button(action: {
-                    DatePicker("Select Time", selection: $selectedTime, displayedComponents:
-                            .hourAndMinute).labelsHidden()
+                    showTimePicker.toggle()
                 }, label: {
                     Image(systemName: "plus")
                 })
-//                .background(.ultraThinMaterial)
-            })
+            }
+            .sheet(isPresented: $showTimePicker) {
+                DatePickerSheet(viewModel: viewModel)
+                    .presentationDetents([.medium])
+                    .presentationCornerRadius(50)
+                    .presentationDragIndicator(.visible)
+            }
         }
-//        .navigationTitle("Alarm")
-//        .toolbarBackground(.ultraThickMaterial, for: .tabBar)
-//        .toolbar(content: {
-//            
-//            Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/, label: {
-//                /*@START_MENU_TOKEN@*/Text("Button")/*@END_MENU_TOKEN@*/
-//            })
-//            .background(.ultraThinMaterial)
-//        })
 	}
 }
 
+struct DatePickerSheet: View {
+    
+    @Environment(\.dismiss) private var dismiss
+    @ObservedObject var viewModel: AlarmListViewModel
+    @State private var selectedTime = Date()
+
+    var body: some View {
+        
+        VStack{
+            
+            HStack(alignment: .top) {
+                Button(action: {
+                    dismiss()
+                }){
+                    Text("Cancel")
+                }
+                
+                Spacer()
+                
+                Button(action: {
+                    dismiss()
+                    viewModel.addAlarm(time: selectedTime)
+                    
+                }){
+                    Text("Save")
+                }
+            }
+            .padding()
+            
+            DatePicker("", selection: $selectedTime, displayedComponents: .hourAndMinute)
+                .labelsHidden()
+                .datePickerStyle(.wheel)
+        }
+    }
+}
+
+@available(iOS 16.4, *)
 struct ContentView_Previews: PreviewProvider {
 	static var previews: some View {
 		ContentView()
