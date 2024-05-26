@@ -4,7 +4,7 @@ data class AlarmData(
     val id: Int,
     val hour: Int,
     val minute: Int,
-    var isSet: Boolean
+    var isOn: Boolean
 ) : Comparable<AlarmData> {
 
     override fun compareTo(other: AlarmData): Int {

@@ -1,18 +1,19 @@
 import SwiftUI
 import shared
 
-@available(iOS 16.4, *)
+@available(iOS 17.0, *)
 struct ContentView: View {
 
     @ObservedObject private var viewModel = AlarmListViewModel()
     @State private var showTimePicker = false
 
-	var body: some View {
+    @available(iOS 17.0, *)
+    var body: some View {
       
         NavigationStack() {
             
             List{
-                ForEach($viewModel.alarmList, id: \.self) { $alarm in
+                ForEach($viewModel.alarmList, id: \.id) { $alarm in
 
                     HStack{
                             Text( viewModel.formatTime(time: alarm) ).font(.custom("AlarmFontSize", size: 60))
@@ -23,13 +24,19 @@ struct ContentView: View {
   
                         Spacer()
                         
-                        Toggle(isOn: $alarm.isSet) {}
+                        Toggle(isOn: $alarm.isOn) {}
+                            .onChange(of: alarm.isOn) {
+                                viewModel.updateAlarm(alarm: alarm)
+                            }
                             .labelsHidden()
                     }
+                
+                
                 }
-                .onAppear() {
-                    viewModel.fetchAlarms()
-                }
+            }
+            .onAppear() {
+                print("on Appear called ")
+                viewModel.fetchAlarms()
             }
             .navigationTitle("Alarm")
             .toolbar {
@@ -86,7 +93,7 @@ struct DatePickerSheet: View {
     }
 }
 
-@available(iOS 16.4, *)
+@available(iOS 17.0, *)
 struct ContentView_Previews: PreviewProvider {
 	static var previews: some View {
 		ContentView()

@@ -27,20 +27,40 @@ class AlarmListViewModel: ObservableObject {
     }
     
     func fetchAlarms() {
-        debugPrint("fetching alarms")
-        alarmList = repo.getAll()
+        
+        Task {
+            debugPrint("fetching alarms")
+            let fetchedAlarms = await repo.getAllAlarm()
+            
+            await MainActor.run {
+                alarmList = fetchedAlarms
+            }
+        }
         
     }
     
     func addAlarm(time: Date) {
         
-        let alarm = AlarmData(id: Int32(alarmList.count),
+        let alarm = AlarmData(id: 0,
                              hour: Int32(Calendar.current.component(.hour, from: time)),
                              minute: Int32(Calendar.current.component(.minute, from: time)),
-                             isSet: true
+                             isOn: true
                             )
         
-        alarmList.append(alarm)
-        repo.insert(alarmData: alarm)
+        Task{
+//            await MainActor.run {
+//               // alarmList.append(alarm)
+//                
+//            }
+            
+            await repo.insertAlarm(alarm: alarm)
+            fetchAlarms()
+        }
+    }
+    
+    func updateAlarm(alarm: AlarmData) {
+        Task{
+            await repo.updateAlarmState(alarm: alarm)
+        }
     }
 }

@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aspark.alarmclock.AlarmData
-import com.aspark.alarmclock.Repository
+import com.aspark.alarmclock.AlarmRepository
 import com.aspark.alarmclock.alarm.setAlarmService
 import com.aspark.alarmclock.android.service.AlarmReceiver
 import kotlinx.coroutines.Dispatchers
@@ -17,25 +17,25 @@ class MainViewModel() : ViewModel() {
     private val _alarmList = MutableLiveData<List<AlarmData>>()
     val alarmList: LiveData<List<AlarmData>> = _alarmList
 
-    private val dataSource by lazy { Repository() }
+    private val dataSource by lazy { AlarmRepository() }
 
     fun getAllAlarmsFromDb() {
         Log.i("MainViewModel", "getAllAlarmsFromDb: called")
         viewModelScope.launch(Dispatchers.IO) {
-            _alarmList.postValue(dataSource.getAll())
+            _alarmList.postValue(dataSource.getAllAlarm())
         }
     }
 
     fun insert(time: AlarmData) {
         viewModelScope.launch(Dispatchers.IO) {
-            dataSource.insert(time)
+            dataSource.insertAlarm(time)
             setAlarmService(time, AlarmReceiver())
         }
     }
 
     fun updateAlarmSet(time: AlarmData) {
         viewModelScope.launch(Dispatchers.IO) {
-            dataSource.updateAlarmSet(time.id, time.isSet)
+            dataSource.updateAlarmState(time.id, time.isOn)
         }
     }
 
@@ -48,7 +48,7 @@ class MainViewModel() : ViewModel() {
     fun alarmSetFalse(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             Log.i("MainViewModel", "alarmSetFalse: called")
-            dataSource.updateAlarmSet(id, false)
+            dataSource.updateAlarmState(id, false)
             updateIsSetUi(id, false)
         }
     }
@@ -61,14 +61,14 @@ class MainViewModel() : ViewModel() {
 
         var index: Int? = null
         alarm?.let {
-            it.isSet = isSet
+            it.isOn = isSet
             index = _alarmList.value?.indexOf(it)
         }
 
         index?.let {
             Log.i("MainViewModel", "updateIsSetUi: called")
             _alarmList.apply {
-                value?.get(it)?.isSet  = isSet
+                value?.get(it)?.isOn  = isSet
                 postValue(_alarmList.value)
             }
         }

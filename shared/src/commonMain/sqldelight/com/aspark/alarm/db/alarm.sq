@@ -2,21 +2,21 @@ CREATE TABLE alarm (
 id INTEGER PRIMARY KEY AUTOINCREMENT ,
 hour INTEGER NOT NULL,
 minute INTEGER NOT NULL,
-is_set INTEGER NOT NULL
+is_On INTEGER NOT NULL
 );
 
-insert:
-INSERT INTO alarm (id, hour, minute, is_set)
-VALUES (?, ?, ?, ?);
+insertAlarm:
+INSERT INTO alarm (hour, minute, is_On)
+VALUES ( ?, ?, ?);
 
-getAll:
+getAllAlarm:
 SELECT *
 FROM alarm
 ORDER BY hour, minute;
 
-updateAlarmSet:
+updateAlarmState:
 UPDATE alarm
-SET is_set = :isSet
+SET is_On = :isOn
 WHERE  id = :id;
 
 deleteById:

@@ -1,6 +1,6 @@
 import SwiftUI
 
-@available(iOS 16.4, *)
+@available(iOS 17.0, *)
 @main
 struct iOSApp: App {
 	var body: some Scene {

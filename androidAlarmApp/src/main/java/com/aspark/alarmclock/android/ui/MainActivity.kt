@@ -241,7 +241,7 @@ private fun AlarmList(alarmList: List<AlarmData>, onAlarmSetChange: (AlarmData)-
 
 @Composable
 fun TimeCard(time: AlarmData, onAlarmSetChange: (AlarmData) -> Unit) {
-    Log.i("MainActivity", "TimeCard: called $time- ${time.isSet}")
+    Log.i("MainActivity", "TimeCard: called $time- ${time.isOn}")
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -276,14 +276,14 @@ fun TimeCard(time: AlarmData, onAlarmSetChange: (AlarmData) -> Unit) {
                 horizontalArrangement = Arrangement.End
             ) {
                 val isChecked = remember(time) {
-                    mutableStateOf(time.isSet)
+                    mutableStateOf(time.isOn)
                 }
 //                Log.i("MainActivity", "TimeCard: isChecked-${isChecked.value}")
                 Switch(
                     checked = isChecked.value,
                     onCheckedChange = {
                         isChecked.value = !isChecked.value
-                        time.isSet = isChecked.value
+                        time.isOn = isChecked.value
 //                        time.isSet = !time.isSet
                         onAlarmSetChange(time)
                     },
