@@ -12,6 +12,7 @@
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 		F401326D2C0250AE00D1C72C /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F401326C2C0250AE00D1C72C /* Repository.swift */; };
+		F401326F2C06051000D1C72C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F401326E2C06051000D1C72C /* AppDelegate.swift */; };
 		F49D8FA62BF7A4C400182D70 /* AlarmListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49D8FA52BF7A4C400182D70 /* AlarmListViewModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -36,6 +37,7 @@
 		7555FF82242A565900829871 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F401326C2C0250AE00D1C72C /* Repository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
+		F401326E2C06051000D1C72C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F49D8FA52BF7A4C400182D70 /* AlarmListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmListViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -85,6 +87,7 @@
 				058557D7273AAEEB004C7B11 /* Preview Content */,
 				F49D8FA52BF7A4C400182D70 /* AlarmListViewModel.swift */,
 				F401326C2C0250AE00D1C72C /* Repository.swift */,
+				F401326E2C06051000D1C72C /* AppDelegate.swift */,
 			);
 			path = iosAlarmApp;
 			sourceTree = "<group>";
@@ -191,6 +194,7 @@
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				F49D8FA62BF7A4C400182D70 /* AlarmListViewModel.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
+				F401326F2C06051000D1C72C /* AppDelegate.swift in Sources */,
 				F401326D2C0250AE00D1C72C /* Repository.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -17,7 +17,7 @@ class AlarmRepository() {
     fun getAllAlarm(): List<AlarmData> {
         return queries.getAllAlarm().executeAsList().map {
             val isSet = it.is_On.toInt() == 1
-            println("AlarmRepository - getAll id:${it.id}")
+//            println("AlarmRepository - getAll id:${it.id}")
             AlarmData(it.id.toInt(), it.hour.toInt(), it.minute.toInt(), isSet)
         }
     }

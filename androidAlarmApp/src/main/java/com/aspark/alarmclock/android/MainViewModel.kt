@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aspark.alarmclock.AlarmData
 import com.aspark.alarmclock.AlarmRepository
-import com.aspark.alarmclock.alarm.setAlarmService
+import com.aspark.alarmclock.AndroidAlarmScheduler
 import com.aspark.alarmclock.android.service.AlarmReceiver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,16 +26,17 @@ class MainViewModel() : ViewModel() {
         }
     }
 
-    fun insert(time: AlarmData) {
+    fun insert(alarm: AlarmData) {
         viewModelScope.launch(Dispatchers.IO) {
-            dataSource.insertAlarm(time)
-            setAlarmService(time, AlarmReceiver())
+            dataSource.insertAlarm(alarm)
+//            setAlarmService(alarm, AlarmReceiver())
+            AndroidAlarmScheduler(MyApplication().applicationContext, AlarmReceiver())
         }
     }
 
-    fun updateAlarmSet(time: AlarmData) {
+    fun updateAlarmSet(alarm: AlarmData) {
         viewModelScope.launch(Dispatchers.IO) {
-            dataSource.updateAlarmState(time.id, time.isOn)
+            dataSource.updateAlarmState(alarm.id, alarm.isOn)
         }
     }
 

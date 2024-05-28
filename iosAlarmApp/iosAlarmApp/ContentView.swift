@@ -11,7 +11,6 @@ struct ContentView: View {
     var body: some View {
       
         NavigationStack() {
-            
             List{
                 ForEach($viewModel.alarmList, id: \.id) { $alarm in
 
