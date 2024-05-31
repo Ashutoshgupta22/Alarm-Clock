@@ -1,5 +1,7 @@
 An Alarm app built with Kotlin Multiplatform, Compose, SwiftUI and SQLDelight.
 
+Latest APK - under Releases section.
+
 # Screenshots: 
 
 ## Android: - 
