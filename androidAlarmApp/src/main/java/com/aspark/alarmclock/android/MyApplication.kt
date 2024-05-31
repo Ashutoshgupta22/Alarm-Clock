@@ -1,6 +1,7 @@
 package com.aspark.alarmclock.android
 
 import android.app.Application
+import android.content.Context
 import com.aspark.alarmclock.android.notification.MyNotification
 
 class MyApplication: Application() {

@@ -38,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -68,8 +69,7 @@ class MainActivity : ComponentActivity() {
                 )
 
 
-                MainScreen(viewModel, this, permissionLauncher,
-                    hasNotificationPermission)
+                MainScreen(viewModel,permissionLauncher, hasNotificationPermission )
             }
         }
     }
@@ -81,10 +81,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(viewModel: MainViewModel, context: Context,
+fun MainScreen(viewModel: MainViewModel,
                permissionLauncher: ManagedActivityResultLauncher<String, Boolean>,
                hasNotificationPermission: Boolean) {
 
+    val context = LocalContext.current.applicationContext
 
     if (!hasNotificationPermission) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -126,7 +127,7 @@ fun MainScreen(viewModel: MainViewModel, context: Context,
 
                 if (! isAlarmPresent) {
                     alarmList.value = alarmList.value.plus(time).sorted()
-                    viewModel.insert(time)
+                    viewModel.insert(time, context)
                 }
                 else Toast.makeText(context, "Alarm already added",
                     Toast.LENGTH_SHORT).show()

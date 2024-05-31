@@ -1,5 +1,6 @@
 package com.aspark.alarmclock.android
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,11 +27,11 @@ class MainViewModel() : ViewModel() {
         }
     }
 
-    fun insert(alarm: AlarmData) {
+    fun insert(alarm: AlarmData, context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             dataSource.insertAlarm(alarm)
 //            setAlarmService(alarm, AlarmReceiver())
-            AndroidAlarmScheduler(MyApplication().applicationContext, AlarmReceiver())
+            AndroidAlarmScheduler(context, AlarmReceiver()).scheduleAlarm(alarm)
         }
     }
 
