@@ -11,8 +11,8 @@ Alarm Clock is a user-friendly and customizable alarm application built with Kot
 - **iOS UI:** SwiftUI
 - **Database:** SQLDelight (Shared Code)
 - **Notifications:**
- - Android: AlarmManager
- - iOS: UNUserNotificationCenter & UNNotificationRequest
+  - Android: AlarmManager
+  - iOS: UNUserNotificationCenter & UNNotificationRequest
 
 ## Benefits:
 
